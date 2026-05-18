@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strategy Git Hub - Projetos</title>
+    <title>LINKCARE VET - Análise Colaborativa</title>
+    <!-- Biblioteca Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -13,134 +15,672 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 40px 20px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            padding: 20px;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-        }
-
-        h1 {
-            color: white;
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 2.5rem;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: rgba(255,255,255,0.9);
-            margin-bottom: 40px;
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-        }
-
-        .card {
             background: white;
             border-radius: 16px;
-            padding: 25px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 30px rgba(0,0,0,0.2);
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
         }
 
-        .card-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
-        }
-
-        .card h2 {
-            color: #2c3e50;
+        .header h1 {
+            font-size: 28px;
             margin-bottom: 10px;
-            font-size: 1.5rem;
         }
 
-        .card p {
-            color: #7f8c8d;
+        .header .timestamp {
+            font-size: 14px;
+            opacity: 0.8;
+            font-family: monospace;
+        }
+
+        .badge {
+            background: #27ae60;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .markdown-note {
+            background: #e8f4f8;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 12px;
             margin-bottom: 15px;
-            line-height: 1.5;
+            color: #2c3e50;
         }
 
-        .card-meta {
+        .markdown-note code {
+            background: #d0e3e8;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .summary-bar {
+            position: sticky;
+            top: 20px;
+            background: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #ecf0f1;
+            flex-wrap: wrap;
+            gap: 10px;
+            z-index: 100;
         }
 
-        .status {
-            font-size: 12px;
-            padding: 4px 12px;
+        .summary-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .export-btn, .copy-markdown-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .copy-markdown-btn {
+            background: #3498db;
+        }
+
+        .interactive-section {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .section-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .section-header h3 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .priority-tag {
+            font-size: 11px;
+            padding: 3px 10px;
             border-radius: 20px;
             font-weight: bold;
         }
 
-        .status.ativo { background: #27ae60; color: white; }
-        .status.planejado { background: #f39c12; color: white; }
-        .status.pausado { background: #e74c3c; color: white; }
+        .priority-alta { background: #e74c3c; color: white; }
+        .priority-media { background: #f39c12; color: white; }
+        .priority-baixa { background: #3498db; color: white; }
 
-        .link {
-            color: #3498db;
-            text-decoration: none;
+        .toggle-icon {
+            font-size: 20px;
+            transition: transform 0.3s;
+        }
+
+        .section-content {
+            padding: 20px;
+            display: none;
+        }
+
+        .section-content.open {
+            display: block;
+        }
+
+        .observation-box, .response-field {
+            background: #fff9e6;
+            border-left: 4px solid #f39c12;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .response-field {
+            background: #e8f5e9;
+            border-left-color: #27ae60;
+        }
+
+        .observation-box label, .response-field label {
             font-weight: bold;
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .observation-box textarea, .response-field textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: monospace;
+            resize: vertical;
+            min-height: 80px;
+            font-size: 13px;
+        }
+
+        .markdown-preview {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 13px;
+            border: 1px dashed #ccc;
+            display: none;
+        }
+
+        .image-upload {
+            margin: 10px 0;
+        }
+
+        .image-upload label {
+            font-size: 13px;
+            color: #2c3e50;
+        }
+
+        .image-input {
+            margin: 8px 0;
+            display: block;
+        }
+
+        .image-preview {
+            max-width: 200px;
+            max-height: 150px;
+            margin-top: 8px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .status-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .status-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .btn-pendente { background: #e74c3c; color: white; }
+        .btn-andamento { background: #f39c12; color: white; }
+        .btn-concluido { background: #27ae60; color: white; }
+        .btn-arquivar { background: #95a5a6; color: white; }
+
+        .send-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .history-log {
+            background: #ecf0f1;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-top: 10px;
+            max-height: 150px;
+            overflow-y: auto;
         }
 
         .footer {
+            background: #ecf0f1;
+            padding: 20px;
             text-align: center;
-            margin-top: 50px;
-            color: rgba(255,255,255,0.7);
-            font-size: 14px;
+            font-size: 12px;
+            color: #7f8c8d;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📁 Strategy Git Hub</h1>
-        <div class="subtitle">Central de projetos e ferramentas colaborativas</div>
+        <div class="header">
+            <h1>🐾 LINKCARE VET</h1>
+            <p>Análise de Sugestões - Com Markdown e Imagens</p>
+            <div class="timestamp">18/05/2026 - 15:30 (UTC-3)</div>
+            <span class="badge">📝 Suporte a Markdown e Upload de Imagens</span>
+        </div>
 
-        <div class="projects-grid">
-            <!-- LINKARE VET -->
-            <div class="card">
-                <div class="card-icon">🐾</div>
-                <h2>LINKARE VET</h2>
-                <p>Sistema para médicos veterinários e tutores. Análise de sugestões com Markdown, imagens e histórico.</p>
-                <div class="card-meta">
-                    <span class="status ativo">🟢 Em desenvolvimento</span>
-                    <a href="/linkare-vet/" class="link">Acessar →</a>
+        <div class="content">
+            <div class="markdown-note">
+                💡 <strong>Dica de formatação Markdown:</strong> Use <code>**negrito**</code>, <code>*itálico*</code>, <code>- lista</code>, <code>1. numerada</code>, <code>[link](url)</code>, <code>![descrição](url da imagem)</code> ou faça <strong>upload de imagem</strong> abaixo.
+            </div>
+
+            <div class="summary-bar">
+                <div class="summary-stats">
+                    <div class="stat"><div class="stat-number" id="totalCount">0</div><div>Total</div></div>
+                    <div class="stat"><div class="stat-number" id="pendingCount">0</div><div>Pendentes</div></div>
+                    <div class="stat"><div class="stat-number" id="progressCount">0</div><div>Em Andamento</div></div>
+                    <div class="stat"><div class="stat-number" id="doneCount">0</div><div>Concluídos</div></div>
+                </div>
+                <div>
+                    <button class="copy-markdown-btn" onclick="copyAllAsMarkdown()">📋 Copiar Tudo em Markdown</button>
+                    <button class="export-btn" onclick="exportData()">📥 Exportar Observações</button>
                 </div>
             </div>
 
-            <!-- Espaço para novos projetos -->
-            <!-- 
-            <div class="card">
-                <div class="card-icon">📊</div>
-                <h2>Nome do Projeto</h2>
-                <p>Descrição do projeto.</p>
-                <div class="card-meta">
-                    <span class="status planejado">📝 Planejado</span>
-                    <a href="/projeto/" class="link">Acessar →</a>
-                </div>
-            </div>
-            -->
+            <div id="sections-container"></div>
         </div>
 
         <div class="footer">
-            <p>📅 Última atualização: 18/05/2026 | 🕒 UTC-3</p>
-            <p>💡 Clique nos cards para acessar as ferramentas interativas</p>
+            <p>📄 Documento Interativo com Markdown e Imagens - LINKCARE VET</p>
+            <p>🗓️ 18/05/2026 - 15:30 (UTC-3) | 🇧🇷 Brasil</p>
+            <p>✅ Escreva com formatação | 📷 Faça upload de imagens | 📋 Copie feedback em Markdown</p>
         </div>
     </div>
+
+    <script>
+        const sectionsData = [
+            { id: "agenda", title: "📅 1. AGENDA (DUAS TELAS SEPARADAS)", priority: "alta", desc: "Veterinário edita horários; Tutor vê disponíveis e seleciona pet." },
+            { id: "pets", title: "🐶 2. TELA PETS (VISÃO DO TUTOR)", priority: "alta", desc: "Ficha rápida, cadastro com anos, login master não adiciona paciente." },
+            { id: "codigo", title: "🔑 3. CADASTRO DE TUTOR COM CÓDIGO", priority: "alta", desc: "Código único por veterinário, cadastro direto para Pet." },
+            { id: "receitas", title: "📄 4. RECEITAS", priority: "alta", desc: "Campo para receita manipulada, PDF com logotipo (não gera), assinatura futura." },
+            { id: "vacinas", title: "💉 5. VACINAS (CORREÇÕES)", priority: "alta", desc: "Foto, calendário com anos, data obrigatória, não aparece na timeline." },
+            { id: "anamnese-ia", title: "🎙️ 6. ANAMNESE COM IA E TABELAS", priority: "media", desc: "Gravador com IA (transcrição), tabela editável." },
+            { id: "mensagens", title: "💬 7. MENSAGENS E CHAT", priority: "media", desc: "Como liberar conversa? Solução: vet inicia." },
+            { id: "empresa", title: "🏢 8. EMPRESA E LOGOTIPO", priority: "alta", desc: "Logotipo aparece nos PDFs." },
+            { id: "estoque", title: "📦 9. ESTOQUE", priority: "baixa", desc: "Não estava previsto - decisão futura." },
+            { id: "google", title: "🔗 10. INTEGRAÇÃO GOOGLE AGENDA", priority: "baixa", desc: "API Google Calendar + OAuth." },
+            { id: "documentos", title: "📑 11. DOCUMENTOS (Base ConnectVets)", priority: "media", desc: "Evolução Clínica, Laudos, Relatórios, Atestado de Óbito, etc." }
+        ];
+
+        let imagesBase64 = {};
+
+        function renderSections() {
+            const container = document.getElementById('sections-container');
+            container.innerHTML = '';
+            
+            sectionsData.forEach(section => {
+                const priorityClass = section.priority === 'alta' ? 'priority-alta' : (section.priority === 'media' ? 'priority-media' : 'priority-baixa');
+                const priorityText = section.priority === 'alta' ? 'Prioridade Alta' : (section.priority === 'media' ? 'Prioridade Média' : 'Prioridade Baixa (Futuro)');
+                
+                container.innerHTML += `
+                    <div class="interactive-section" data-id="${section.id}">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h3>${section.title}</h3>
+                            <span class="priority-tag ${priorityClass}">${priorityText}</span>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="section-content">
+                            <p><strong>Descrição:</strong> ${section.desc}</p>
+                            
+                            <div class="observation-box">
+                                <label>📝 Observações (Markdown + Imagens):</label>
+                                <textarea class="obs-textarea" placeholder="Digite suas observações... Use **negrito**, *itálico*, - listas, etc."></textarea>
+                                <div class="markdown-preview" id="obs-preview-${section.id}"></div>
+                                <div class="image-upload">
+                                    <label>🖼️ Adicionar imagem:</label>
+                                    <input type="file" class="image-input" accept="image/*">
+                                    <div id="image-preview-${section.id}"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="status-buttons">
+                                <button class="status-btn btn-pendente" onclick="setStatus(this, 'pendente')">⏳ Pendente</button>
+                                <button class="status-btn btn-andamento" onclick="setStatus(this, 'andamento')">🔄 Em Andamento</button>
+                                <button class="status-btn btn-concluido" onclick="setStatus(this, 'concluido')">✅ Concluído</button>
+                                <button class="status-btn btn-arquivar" onclick="setStatus(this, 'arquivado')">📦 Arquivar</button>
+                            </div>
+                            
+                            <div class="response-field">
+                                <label>✏️ Resposta/Reenvio para Laura (Markdown):</label>
+                                <textarea class="response-textarea" placeholder="Digite aqui a resposta..."></textarea>
+                                <div class="markdown-preview" id="resp-preview-${section.id}"></div>
+                                <button class="send-btn" onclick="sendResponse(this)">📧 Registrar Resposta</button>
+                            </div>
+                            
+                            <div class="history-log" id="log-${section.id}">
+                                <strong>📋 Histórico de Interações:</strong>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            attachEventListeners();
+        }
+
+        function attachEventListeners() {
+            document.querySelectorAll('.obs-textarea').forEach(textarea => {
+                const sectionId = textarea.closest('.interactive-section').getAttribute('data-id');
+                const previewDiv = document.getElementById(`obs-preview-${sectionId}`);
+                textarea.addEventListener('input', () => {
+                    if (previewDiv) {
+                        previewDiv.innerHTML = marked.parse(textarea.value);
+                        previewDiv.style.display = textarea.value.trim() ? 'block' : 'none';
+                    }
+                    saveObservation(sectionId, textarea.value);
+                });
+            });
+            
+            document.querySelectorAll('.response-textarea').forEach(textarea => {
+                const sectionId = textarea.closest('.interactive-section').getAttribute('data-id');
+                const previewDiv = document.getElementById(`resp-preview-${sectionId}`);
+                textarea.addEventListener('input', () => {
+                    if (previewDiv) {
+                        previewDiv.innerHTML = marked.parse(textarea.value);
+                        previewDiv.style.display = textarea.value.trim() ? 'block' : 'none';
+                    }
+                    saveResponse(sectionId, textarea.value);
+                });
+            });
+            
+            document.querySelectorAll('.image-input').forEach(input => {
+                input.addEventListener('change', function(e) {
+                    const section = this.closest('.interactive-section');
+                    const sectionId = section.getAttribute('data-id');
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            const imgBase64 = event.target.result;
+                            imagesBase64[sectionId] = imgBase64;
+                            const previewContainer = document.getElementById(`image-preview-${sectionId}`);
+                            previewContainer.innerHTML = `<img src="${imgBase64}" class="image-preview" alt="Imagem anexada">`;
+                            
+                            const obsTextarea = section.querySelector('.obs-textarea');
+                            const markdownImage = `\n\n![Imagem anexada](${imgBase64})\n\n`;
+                            obsTextarea.value += markdownImage;
+                            saveObservation(sectionId, obsTextarea.value);
+                            
+                            const previewDiv = document.getElementById(`obs-preview-${sectionId}`);
+                            if (previewDiv) {
+                                previewDiv.innerHTML = marked.parse(obsTextarea.value);
+                                previewDiv.style.display = 'block';
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            });
+        }
+
+        function toggleSection(header) {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                icon.innerHTML = '▼';
+            } else {
+                content.classList.add('open');
+                icon.innerHTML = '▲';
+            }
+        }
+
+        function saveObservation(sectionId, value) {
+            localStorage.setItem(`obs_${sectionId}`, value);
+        }
+
+        function saveResponse(sectionId, value) {
+            localStorage.setItem(`response_${sectionId}`, value);
+        }
+
+        function saveStatus(sectionId, status) {
+            localStorage.setItem(`status_${sectionId}`, status);
+        }
+
+        function saveHistory(sectionId, history) {
+            localStorage.setItem(`history_${sectionId}`, JSON.stringify(history));
+        }
+
+        function loadAllData() {
+            sectionsData.forEach(section => {
+                const sectionId = section.id;
+                const sectionEl = document.querySelector(`.interactive-section[data-id="${sectionId}"]`);
+                if (!sectionEl) return;
+                
+                const obsTextarea = sectionEl.querySelector('.obs-textarea');
+                const responseTextarea = sectionEl.querySelector('.response-textarea');
+                
+                const obsSaved = localStorage.getItem(`obs_${sectionId}`);
+                if (obsSaved && obsTextarea) {
+                    obsTextarea.value = obsSaved;
+                    const previewDiv = document.getElementById(`obs-preview-${sectionId}`);
+                    if (previewDiv && obsSaved.trim()) {
+                        previewDiv.innerHTML = marked.parse(obsSaved);
+                        previewDiv.style.display = 'block';
+                    }
+                }
+                
+                const responseSaved = localStorage.getItem(`response_${sectionId}`);
+                if (responseSaved && responseTextarea) {
+                    responseTextarea.value = responseSaved;
+                    const previewDiv = document.getElementById(`resp-preview-${sectionId}`);
+                    if (previewDiv && responseSaved.trim()) {
+                        previewDiv.innerHTML = marked.parse(responseSaved);
+                        previewDiv.style.display = 'block';
+                    }
+                }
+                
+                const statusSaved = localStorage.getItem(`status_${sectionId}`);
+                if (statusSaved) {
+                    updateStatusButtonUI(sectionEl, statusSaved);
+                }
+                
+                const historySaved = localStorage.getItem(`history_${sectionId}`);
+                if (historySaved) {
+                    const historyLog = sectionEl.querySelector('.history-log');
+                    if (historyLog) {
+                        const history = JSON.parse(historySaved);
+                        historyLog.innerHTML = '<strong>📋 Histórico de Interações:</strong>';
+                        history.forEach(item => {
+                            const p = document.createElement('p');
+                            p.innerHTML = `📌 ${item}`;
+                            historyLog.appendChild(p);
+                        });
+                    }
+                }
+            });
+        }
+
+        function updateStatusButtonUI(section, status) {
+            const btns = section.querySelectorAll('.status-btn');
+            btns.forEach(btn => btn.style.opacity = '0.6');
+            let activeBtn = null;
+            if (status === 'pendente') activeBtn = section.querySelector('.btn-pendente');
+            if (status === 'andamento') activeBtn = section.querySelector('.btn-andamento');
+            if (status === 'concluido') activeBtn = section.querySelector('.btn-concluido');
+            if (status === 'arquivado') activeBtn = section.querySelector('.btn-arquivar');
+            if (activeBtn) activeBtn.style.opacity = '1';
+        }
+
+        function setStatus(button, status) {
+            const section = button.closest('.interactive-section');
+            const sectionId = section.getAttribute('data-id');
+            const historyLog = section.querySelector('.history-log');
+            
+            updateStatusButtonUI(section, status);
+            saveStatus(sectionId, status);
+            
+            const timestamp = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+            const statusText = status === 'pendente' ? '⏳ Pendente' :
+                              status === 'andamento' ? '🔄 Em Andamento' :
+                              status === 'concluido' ? '✅ Concluído' : '📦 Arquivado';
+            
+            const historyItem = `${timestamp} - Status alterado para: ${statusText}`;
+            let history = [];
+            const historySaved = localStorage.getItem(`history_${sectionId}`);
+            if (historySaved) history = JSON.parse(historySaved);
+            history.push(historyItem);
+            saveHistory(sectionId, history);
+            
+            const p = document.createElement('p');
+            p.innerHTML = `📌 ${historyItem}`;
+            historyLog.appendChild(p);
+            
+            updateGlobalCounts();
+            updateSummary();
+        }
+
+        function sendResponse(button) {
+            const section = button.closest('.interactive-section');
+            const sectionId = section.getAttribute('data-id');
+            const responseTextarea = section.querySelector('.response-textarea');
+            const historyLog = section.querySelector('.history-log');
+            const response = responseTextarea.value;
+            
+            if (!response.trim()) {
+                alert('Digite uma resposta antes de registrar!');
+                return;
+            }
+            
+            const timestamp = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+            const historyItem = `${timestamp} - 📧 RESPOSTA REGISTRADA: "${response.substring(0, 100)}${response.length > 100 ? '...' : ''}"`;
+            
+            saveResponse(sectionId, response);
+            
+            let history = [];
+            const historySaved = localStorage.getItem(`history_${sectionId}`);
+            if (historySaved) history = JSON.parse(historySaved);
+            history.push(historyItem);
+            saveHistory(sectionId, history);
+            
+            const p = document.createElement('p');
+            p.innerHTML = `📌 ${historyItem}`;
+            historyLog.appendChild(p);
+            
+            alert('Resposta registrada no histórico!');
+        }
+
+        function updateGlobalCounts() {
+            let pendente = 0, andamento = 0, concluido = 0;
+            sectionsData.forEach(section => {
+                const status = localStorage.getItem(`status_${section.id}`);
+                if (status === 'pendente') pendente++;
+                else if (status === 'andamento') andamento++;
+                else if (status === 'concluido') concluido++;
+                else pendente++;
+            });
+            window.statusCount = { total: sectionsData.length, pendente, andamento, concluido };
+        }
+
+        function updateSummary() {
+            if (window.statusCount) {
+                document.getElementById('totalCount').innerText = window.statusCount.total;
+                document.getElementById('pendingCount').innerText = window.statusCount.pendente;
+                document.getElementById('progressCount').innerText = window.statusCount.andamento;
+                document.getElementById('doneCount').innerText = window.statusCount.concluido;
+            }
+        }
+
+        function copyAllAsMarkdown() {
+            let markdownContent = `# LINKCARE VET - Feedback\n\n`;
+            markdownContent += `**Data:** ${new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}\n\n`;
+            markdownContent += `---\n\n`;
+            
+            sectionsData.forEach(section => {
+                const obs = localStorage.getItem(`obs_${section.id}`) || '';
+                const response = localStorage.getItem(`response_${section.id}`) || '';
+                const status = localStorage.getItem(`status_${section.id}`) || 'pendente';
+                const statusText = status === 'pendente' ? '⏳ Pendente' :
+                                  status === 'andamento' ? '🔄 Em Andamento' :
+                                  status === 'concluido' ? '✅ Concluído' : '📦 Arquivado';
+                
+                markdownContent += `## ${section.title}\n\n`;
+                markdownContent += `**Status:** ${statusText}\n\n`;
+                if (obs.trim()) markdownContent += `### Observações:\n${obs}\n\n`;
+                if (response.trim()) markdownContent += `### Resposta:\n${response}\n\n`;
+                markdownContent += `---\n\n`;
+            });
+            
+            navigator.clipboard.writeText(markdownContent).then(() => {
+                alert('✅ Feedback copiado em Markdown! Agora você pode colar em qualquer lugar.');
+            });
+        }
+
+        function exportData() {
+            let exportContent = "=".repeat(60) + "\n";
+            exportContent += "LINKCARE VET - RELATÓRIO DE OBSERVAÇÕES E RESPOSTAS\n";
+            exportContent += `Data de exportação: ${new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}\n`;
+            exportContent += "=".repeat(60) + "\n\n";
+            
+            sectionsData.forEach(section => {
+                const obs = localStorage.getItem(`obs_${section.id}`) || "(vazio)";
+                const response = localStorage.getItem(`response_${section.id}`) || "(vazio)";
+                const status = localStorage.getItem(`status_${section.id}`) || "pendente";
+                const statusText = status === 'pendente' ? '⏳ Pendente' :
+                                  status === 'andamento' ? '🔄 Em Andamento' :
+                                  status === 'concluido' ? '✅ Concluído' : '📦 Arquivado';
+                
+                exportContent += `📌 ${section.title}\n`;
+                exportContent += `   Status: ${statusText}\n`;
+                exportContent += `   Observações:\n${obs}\n\n`;
+                exportContent += `   Resposta:\n${response}\n`;
+                exportContent += "-".repeat(40) + "\n\n";
+            });
+            
+            const blob = new Blob([exportContent], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.download = `linkcare_vet_observacoes_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            alert('Relatório exportado com sucesso!');
+        }
+
+        function init() {
+            renderSections();
+            loadAllData();
+            updateGlobalCounts();
+            updateSummary();
+        }
+
+        window.onload = init;
+    </script>
 </body>
 </html>
