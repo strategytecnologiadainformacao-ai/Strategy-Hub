@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategy Git Hub - Projetos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 40px;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px rgba(0,0,0,0.2);
+        }
+
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .card p {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        .status {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .status.ativo { background: #27ae60; color: white; }
+        .status.planejado { background: #f39c12; color: white; }
+        .status.pausado { background: #e74c3c; color: white; }
+
+        .link {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📁 Strategy Git Hub</h1>
+        <div class="subtitle">Central de projetos e ferramentas colaborativas</div>
+
+        <div class="projects-grid">
+            <!-- LINKARE VET -->
+            <div class="card">
+                <div class="card-icon">🐾</div>
+                <h2>LINKARE VET</h2>
+                <p>Sistema para médicos veterinários e tutores. Análise de sugestões com Markdown, imagens e histórico.</p>
+                <div class="card-meta">
+                    <span class="status ativo">🟢 Em desenvolvimento</span>
+                    <a href="/linkare-vet/" class="link">Acessar →</a>
+                </div>
+            </div>
+
+            <!-- Espaço para novos projetos -->
+            <!-- 
+            <div class="card">
+                <div class="card-icon">📊</div>
+                <h2>Nome do Projeto</h2>
+                <p>Descrição do projeto.</p>
+                <div class="card-meta">
+                    <span class="status planejado">📝 Planejado</span>
+                    <a href="/projeto/" class="link">Acessar →</a>
+                </div>
+            </div>
+            -->
+        </div>
+
+        <div class="footer">
+            <p>📅 Última atualização: 18/05/2026 | 🕒 UTC-3</p>
+            <p>💡 Clique nos cards para acessar as ferramentas interativas</p>
+        </div>
+    </div>
+</body>
+</html>
