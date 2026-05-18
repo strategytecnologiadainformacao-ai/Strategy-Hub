@@ -208,10 +208,21 @@
             margin-top: 10px;
             font-size: 13px;
             border: 1px dashed #ccc;
+            display: none;
         }
 
         .image-upload {
             margin: 10px 0;
+        }
+
+        .image-upload label {
+            font-size: 13px;
+            color: #2c3e50;
+        }
+
+        .image-input {
+            margin: 8px 0;
+            display: block;
         }
 
         .image-preview {
@@ -277,7 +288,7 @@
         <div class="header">
             <h1>🐾 LINKCARE VET</h1>
             <p>Análise de Sugestões - Com Markdown e Imagens</p>
-            <div class="timestamp">18/05/2026 - 13:00 (UTC-3)</div>
+            <div class="timestamp">18/05/2026 - 15:30 (UTC-3)</div>
             <span class="badge">📝 Suporte a Markdown e Upload de Imagens</span>
         </div>
 
@@ -304,7 +315,7 @@
 
         <div class="footer">
             <p>📄 Documento Interativo com Markdown e Imagens - LINKCARE VET</p>
-            <p>🗓️ 18/05/2026 - 13:00 (UTC-3) | 🇧🇷 Brasil</p>
+            <p>🗓️ 18/05/2026 - 15:30 (UTC-3) | 🇧🇷 Brasil</p>
             <p>✅ Escreva com formatação | 📷 Faça upload de imagens | 📋 Copie feedback em Markdown</p>
         </div>
     </div>
@@ -347,7 +358,7 @@
                             <div class="observation-box">
                                 <label>📝 Observações (Markdown + Imagens):</label>
                                 <textarea class="obs-textarea" placeholder="Digite suas observações... Use **negrito**, *itálico*, - listas, etc."></textarea>
-                                <div class="markdown-preview" id="obs-preview-${section.id}" style="display:none;"></div>
+                                <div class="markdown-preview" id="obs-preview-${section.id}"></div>
                                 <div class="image-upload">
                                     <label>🖼️ Adicionar imagem:</label>
                                     <input type="file" class="image-input" accept="image/*">
@@ -365,7 +376,7 @@
                             <div class="response-field">
                                 <label>✏️ Resposta/Reenvio para Laura (Markdown):</label>
                                 <textarea class="response-textarea" placeholder="Digite aqui a resposta..."></textarea>
-                                <div class="markdown-preview" id="resp-preview-${section.id}" style="display:none;"></div>
+                                <div class="markdown-preview" id="resp-preview-${section.id}"></div>
                                 <button class="send-btn" onclick="sendResponse(this)">📧 Registrar Resposta</button>
                             </div>
                             
