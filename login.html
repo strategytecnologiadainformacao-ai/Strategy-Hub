@@ -102,27 +102,6 @@
             text-decoration: underline;
         }
 
-        .social-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .google-btn {
-            background: #db4437;
-        }
-
-        .github-btn {
-            background: #333;
-        }
-
-        .divider {
-            text-align: center;
-            margin: 20px 0;
-            color: #7f8c8d;
-            font-size: 12px;
-        }
-
         .footer {
             text-align: center;
             margin-top: 20px;
@@ -138,23 +117,15 @@
         
         <div id="messageDiv" style="display:none;"></div>
         
-        <!-- Formulário de Login -->
+        <!-- FORMULÁRIO DE LOGIN -->
         <div id="loginForm">
             <input type="email" id="email" placeholder="E-mail" autocomplete="email">
             <input type="password" id="password" placeholder="Senha" autocomplete="current-password">
             <button onclick="handleLogin()">🔐 Entrar</button>
-            
-            <div class="divider">ou</div>
-            
-            <div class="social-buttons">
-                <button class="google-btn" onclick="handleGoogleLogin()">G Google</button>
-                <button class="github-btn" onclick="handleGitHubLogin()">🐙 GitHub</button>
-            </div>
-            
             <div class="toggle" onclick="showSignup()">📝 Não tem conta? Cadastre-se</div>
         </div>
         
-        <!-- Formulário de Cadastro -->
+        <!-- FORMULÁRIO DE CADASTRO (inicialmente escondido) -->
         <div id="signupForm" style="display:none;">
             <input type="email" id="signupEmail" placeholder="E-mail">
             <input type="password" id="signupPassword" placeholder="Senha (mínimo 6 caracteres)">
@@ -168,7 +139,7 @@
     </div>
 
     <script>
-        // CONFIGURAÇÃO DO SUPABASE (SUAS CREDENCIAIS)
+        // Configuração do Supabase (SUAS CREDENCIAIS)
         const SUPABASE_URL = 'https://bdgyqbnemurjonszfpoo.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkZ3lxYm5lbXVyam9uc3pmcG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxMjk2MzUsImV4cCI6MjA5NDcwNTYzNX0.UGDJifNskQMKVaE3gSJZbfaHvJmkjttaEHcT0Pxl1_A';
         
@@ -177,8 +148,7 @@
         // Verificar se já está logado
         supabase.auth.getSession().then(({ data: { session } }) => {
             if (session) {
-                // Já logado, redireciona para a análise
-                window.location.href = '/Strategy-Hub/linkcare-vet/analise.html';
+                window.location.href = '/Strategy-Hub/linkcare-vet/index.html';
             }
         });
 
@@ -189,7 +159,7 @@
             messageDiv.style.display = 'block';
             setTimeout(() => {
                 messageDiv.style.display = 'none';
-            }, 3000);
+            }, 4000);
         }
 
         async function handleLogin() {
@@ -208,8 +178,8 @@
             } else {
                 showMessage('Login realizado! Redirecionando...', false);
                 setTimeout(() => {
-                    window.location.href = '/Strategy-Hub/linkcare-vet/analise.html';
-                }, 1000);
+                    window.location.href = '/Strategy-Hub/linkcare-vet/index.html';
+                }, 1500);
             }
         }
 
@@ -231,7 +201,7 @@
                 email, 
                 password,
                 options: {
-                    emailRedirectTo: 'https://strategytecnologiadainformacao-ai.github.io/Strategy-Hub/linkcare-vet/analise.html'
+                    emailRedirectTo: 'https://strategytecnologiadainformacao-ai.github.io/Strategy-Hub/login.html'
                 }
             });
             
@@ -243,26 +213,6 @@
                     showLogin();
                 }, 2000);
             }
-        }
-
-        async function handleGoogleLogin() {
-            const { error } = await supabase.auth.signInWithOAuth({ 
-                provider: 'google',
-                options: {
-                    redirectTo: 'https://strategytecnologiadainformacao-ai.github.io/Strategy-Hub/linkcare-vet/analise.html'
-                }
-            });
-            if (error) showMessage(error.message);
-        }
-
-        async function handleGitHubLogin() {
-            const { error } = await supabase.auth.signInWithOAuth({ 
-                provider: 'github',
-                options: {
-                    redirectTo: 'https://strategytecnologiadainformacao-ai.github.io/Strategy-Hub/linkcare-vet/analise.html'
-                }
-            });
-            if (error) showMessage(error.message);
         }
 
         function showSignup() {
