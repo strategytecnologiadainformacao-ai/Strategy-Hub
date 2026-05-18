@@ -1,49 +1,10 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Login - LINKCARE VET</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
-        .login-container{background:white;border-radius:16px;padding:40px;width:100%;max-width:400px;box-shadow:0 20px 40px rgba(0,0,0,0.2)}
-        .logo{text-align:center;font-size:64px;margin-bottom:20px}
-        h1{text-align:center;color:#2c3e50;margin-bottom:30px}
-        input{width:100%;padding:12px;margin:10px 0;border:1px solid #ddd;border-radius:8px;box-sizing:border-box}
-        button{width:100%;padding:12px;background:#27ae60;color:white;border:none;border-radius:8px;cursor:pointer;margin-top:10px}
-        .error{background:#e74c3c;color:white;padding:10px;border-radius:8px;margin-bottom:15px;text-align:center}
-        .success{background:#27ae60;color:white;padding:10px;border-radius:8px;margin-bottom:15px;text-align:center}
-        .toggle{text-align:center;margin-top:15px;color:#3498db;cursor:pointer}
-        .footer{text-align:center;margin-top:20px;font-size:11px;color:#95a5a6}
-    </style>
-</head>
-<body>
-    <div class="login-container">
-        <div class="logo">🐾</div>
-        <h1>LINKCARE VET</h1>
-        <div id="messageDiv" style="display:none;"></div>
-        <div id="loginForm">
-            <input type="email" id="email" placeholder="E-mail">
-            <input type="password" id="password" placeholder="Senha">
-            <button onclick="handleLogin()">🔐 Entrar</button>
-            <div class="toggle" onclick="showSignup()">📝 Não tem conta? Cadastre-se</div>
-        </div>
-        <div id="signupForm" style="display:none;">
-            <input type="email" id="signupEmail" placeholder="E-mail">
-            <input type="password" id="signupPassword" placeholder="Senha (mínimo 6)">
-            <button onclick="handleSignup()">📝 Cadastrar</button>
-            <div class="toggle" onclick="showLogin()">🔙 Voltar ao login</div>
-        </div>
-        <div class="footer">🔒 Acesso restrito · Supabase</div>
-    </div>
     <script>
         // CONFIGURAÇÃO DO SUPABASE
         const SUPABASE_URL = 'https://bdgyqbnemurjonszfpoo.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkZ3lxYm5lbXVyam9uc3pmcG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxMjk2MzUsImV4cCI6MjA5NDcwNTYzNX0.UGDJifNskQMKVaE3gSJZbfaHvJmkjttaEHcT0Pxl1_A';
         
-        // CRIA O CLIENTE SUPABASE (APENAS UMA VEZ)
-        const supabaseClient = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // CORREÇÃO: usa 'supabase' (sem o 'Js') - a biblioteca carrega assim
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         // VARIÁVEL GLOBAL PARA ACESSAR O CLIENTE
         window.supabase = supabaseClient;
@@ -124,6 +85,5 @@
         });
         
         console.log('✅ Página de login carregada corretamente');
+        console.log('Supabase client:', window.supabase);
     </script>
-</body>
-</html>
