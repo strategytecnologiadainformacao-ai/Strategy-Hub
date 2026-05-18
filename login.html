@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - LINKCARE VET</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #219a52;
+        }
+
+        .error {
+            background: #e74c3c;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .success {
+            background: #27ae60;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .toggle {
+            text-align: center;
+            margin-top: 15px;
+            color: #3498db;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .toggle:hover {
+            text-decoration: underline;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .google-btn {
+            background: #db4437;
+        }
+
+        .github-btn {
+            background: #333;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 11px;
+            color: #95a5a6;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container" id="app">
+        <div class="logo">🐾</div>
+        <h1>LINKCARE VET</h1>
+        
+        <div id="messageDiv" style="display:none;"></div>
+        
+        <!-- Formulário de Login -->
+        <div id="loginForm">
+            <input type="email" id="email" placeholder="E-mail" autocomplete="email">
+            <input type="password" id="password" placeholder="Senha" autocomplete="current-password">
+            <button onclick="handleLogin()">🔐 Entrar</button>
+            
+            <div class="divider">ou</div>
+            
+            <div class="social-buttons">
+                <button class="google-btn" onclick="handleGoogleLogin()">G Google</button>
+                <button class="github-btn" onclick="handleGitHubLogin()">🐙 GitHub</button>
+            </div>
+            
+            <div class="toggle" onclick="showSignup()">📝 Não tem conta? Cadastre-se</div>
+        </div>
+        
+        <!-- Formulário de Cadastro -->
+        <div id="signupForm" style="display:none;">
+            <input type="email" id="signupEmail" placeholder="E-mail">
+            <input type="password" id="signupPassword" placeholder="Senha (mínimo 6 caracteres)">
+            <button onclick="handleSignup()">📝 Cadastrar</button>
+            <div class="toggle" onclick="showLogin()">🔙 Voltar ao login</div>
+        </div>
+        
+        <div class="footer">
+            🔒 Acesso restrito · Dados protegidos por Supabase
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURAÇÃO DO SUPABASE (SUAS CREDENCIAIS)
+        const SUPABASE_URL = 'https://bdgyqbnemurjonszfpoo.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkZ3lxYm5lbXVyam9uc3pmcG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxMjk2MzUsImV4cCI6MjA5NDcwNTYzNX0.UGDJifNskQMKVaE3gSJZbfaHvJmkjttaEHcT0Pxl1_A';
+        
+        const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Verificar se já está logado
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                // Já logado, redireciona para a análise
+                window.location.href = '/Strategy-Hub/linkcare-vet/analise.html';
+            }
+        });
+
+        function showMessage(text, isError = true) {
+            const messageDiv = document.getElementById('messageDiv');
+            messageDiv.className = isError ? 'error' : 'success';
+            messageDiv.textContent = text;
+            messageDiv.style.display = 'block';
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                showMessage('Preencha e-mail e senha!');
+                return;
+            }
+            
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                showMessage(error.message);
+            } else {
+                showMessage('Login realizado! Redirecionando...', false);
+                setTimeout(() => {
+                    window.location.href = '/Strategy-Hub/linkcare-vet/analise.html';
+                }, 1000);
+            }
+        }
+
+        async function handleSignup() {
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            
+            if (!email || !password) {
+                showMessage('Preencha e-mail e senha!');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('A senha deve ter pelo menos 6 caracteres!');
+                return;
+            }
+            
+            const { data, error } = await supabase.auth.signUp({ 
+                email, 
+                password,
+                options: {
+                    emailRedirectTo: 'https://strategytecnologiadainformacao-ai.github.io/Strategy-Hub/linkcare-vet/analise.html'
+                }
+            });
+            
+            if (error) {
+                showMessage(error.message);
+            } else {
+                showMessage('✅ Cadastro realizado! Verifique seu e-mail para confirmar.', false);
+                setTimeout(() => {
+                    showLogin();
+                }, 2000);
+            }
+        }
+
+        async function handleGoogleLogin() {
+            const { error } = await supabase.auth.signInWithOAuth({ 
+                provider: 'google',
+                options: {
+                    redirectTo: 'https://strategytecnologiadainformacao-ai.github.io/Strategy-Hub/linkcare-vet/analise.html'
+                }
+            });
+            if (error) showMessage(error.message);
+        }
+
+        async function handleGitHubLogin() {
+            const { error } = await supabase.auth.signInWithOAuth({ 
+                provider: 'github',
+                options: {
+                    redirectTo: 'https://strategytecnologiadainformacao-ai.github.io/Strategy-Hub/linkcare-vet/analise.html'
+                }
+            });
+            if (error) showMessage(error.message);
+        }
+
+        function showSignup() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('signupForm').style.display = 'block';
+            document.getElementById('messageDiv').style.display = 'none';
+        }
+
+        function showLogin() {
+            document.getElementById('signupForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('messageDiv').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
