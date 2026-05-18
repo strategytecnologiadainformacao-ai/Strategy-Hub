@@ -137,95 +137,85 @@
             🔒 Acesso restrito · Dados protegidos por Supabase
         </div>
     </div>
-
     <script>
-        // Configuração do Supabase (SUAS CREDENCIAIS)
+        // CONFIGURAÇÃO DO SUPABASE
         const SUPABASE_URL = 'https://bdgyqbnemurjonszfpoo.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkZ3lxYm5lbXVyam9uc3pmcG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxMjk2MzUsImV4cCI6MjA5NDcwNTYzNX0.UGDJifNskQMKVaE3gSJZbfaHvJmkjttaEHcT0Pxl1_A';
         
-        const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        // Verificar se já está logado
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session) {
-                window.location.href = '/Strategy-Hub/linkcare-vet/index.html';
-            }
-        });
-
-        function showMessage(text, isError = true) {
-            const messageDiv = document.getElementById('messageDiv');
-            messageDiv.className = isError ? 'error' : 'success';
-            messageDiv.textContent = text;
-            messageDiv.style.display = 'block';
-            setTimeout(() => {
-                messageDiv.style.display = 'none';
-            }, 4000);
-        }
-
-        async function handleLogin() {
+        // CORREÇÃO: usa 'supabase' (sem o 'Js')
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        window.supabase = supabaseClient;
+        
+        window.showMessage = function(text, isError = true) {
+            const div = document.getElementById('messageDiv');
+            div.className = isError ? 'error' : 'success';
+            div.textContent = text;
+            div.style.display = 'block';
+            setTimeout(() => div.style.display = 'none', 4000);
+        };
+        
+        window.handleLogin = async function() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
             if (!email || !password) {
-                showMessage('Preencha e-mail e senha!');
+                window.showMessage('Preencha e-mail e senha!');
                 return;
             }
             
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-            
+            const { error } = await window.supabase.auth.signInWithPassword({ email, password });
             if (error) {
-                showMessage(error.message);
+                window.showMessage(error.message);
             } else {
-                showMessage('Login realizado! Redirecionando...', false);
+                window.showMessage('Login realizado! Redirecionando...', false);
                 setTimeout(() => {
                     window.location.href = '/Strategy-Hub/linkcare-vet/index.html';
                 }, 1500);
             }
-        }
-
-        async function handleSignup() {
+        };
+        
+        window.handleSignup = async function() {
             const email = document.getElementById('signupEmail').value;
             const password = document.getElementById('signupPassword').value;
             
             if (!email || !password) {
-                showMessage('Preencha e-mail e senha!');
+                window.showMessage('Preencha e-mail e senha!');
                 return;
             }
-            
             if (password.length < 6) {
-                showMessage('A senha deve ter pelo menos 6 caracteres!');
+                window.showMessage('Senha: mínimo 6 caracteres!');
                 return;
             }
             
-            const { data, error } = await supabase.auth.signUp({ 
-                email, 
-                password,
-                options: {
-                    emailRedirectTo: 'https://strategytecnologiadainformacao-ai.github.io/Strategy-Hub/login.html'
-                }
-            });
-            
+            const { error } = await window.supabase.auth.signUp({ email, password });
             if (error) {
-                showMessage(error.message);
+                window.showMessage(error.message);
             } else {
-                showMessage('✅ Cadastro realizado! Verifique seu e-mail para confirmar.', false);
-                setTimeout(() => {
-                    showLogin();
-                }, 2000);
+                window.showMessage('✅ Cadastrado! Verifique seu e-mail.', false);
+                document.getElementById('signupEmail').value = '';
+                document.getElementById('signupPassword').value = '';
+                window.showLogin();
             }
-        }
-
-        function showSignup() {
+        };
+        
+        window.showSignup = function() {
             document.getElementById('loginForm').style.display = 'none';
             document.getElementById('signupForm').style.display = 'block';
-            document.getElementById('messageDiv').style.display = 'none';
-        }
-
-        function showLogin() {
+        };
+        
+        window.showLogin = function() {
             document.getElementById('signupForm').style.display = 'none';
             document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('messageDiv').style.display = 'none';
-        }
+        };
+        
+        window.supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                window.location.href = '/Strategy-Hub/linkcare-vet/index.html';
+            }
+        });
+        
+        console.log('✅ Página de login carregada corretamente');
     </script>
-</body>
+   </body>
 </html>
